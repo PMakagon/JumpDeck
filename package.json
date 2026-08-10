@@ -1,0 +1,22 @@
+{
+  "name": "com.pmakagon.jumpdeck",
+  "version": "0.1.0",
+  "displayName": "JumpDeck",
+  "description": "Personal project pins and live scene queries for the Unity Editor.",
+  "unity": "2023.2",
+  "type": "tool",
+  "license": "MIT",
+  "author": {
+    "name": "PMakagon",
+    "url": "https://github.com/PMakagon"
+  },
+  "keywords": [
+    "editor",
+    "bookmarks",
+    "favorites",
+    "navigation",
+    "search"
+  ],
+  "documentationUrl": "https://github.com/PMakagon/JumpDeck#readme",
+  "licensesUrl": "https://github.com/PMakagon/JumpDeck/blob/main/LICENSE.md"
+}

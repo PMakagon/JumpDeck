@@ -1,0 +1,23 @@
+# IDE files
+.idea/
+.vs/
+.vscode/
+*.csproj
+*.sln
+*.suo
+*.user
+
+# Unity-generated project data
+Library/
+Logs/
+MemoryCaptures/
+Obj/
+Temp/
+UserSettings/
+
+# Build and OS artifacts
+Build/
+Builds/
+*.unitypackage
+.DS_Store
+Thumbs.db

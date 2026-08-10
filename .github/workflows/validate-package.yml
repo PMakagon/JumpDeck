@@ -1,0 +1,25 @@
+name: Validate UPM package
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Validate package manifest
+        shell: bash
+        run: |
+          node -e "const p=require('./package.json'); if(!p.name || !p.version || !p.displayName || !p.unity) process.exit(1)"
+
+      - name: Check required package files
+        shell: bash
+        run: |
+          test -f Editor/JumpDeck.Editor.asmdef
+          test -f Editor/JumpDeckWindow.cs
+          test -f README.md
+          test -f LICENSE.md
