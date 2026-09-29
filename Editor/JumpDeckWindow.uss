@@ -3,6 +3,8 @@
 }
 
 .jumpdeck-toolbar {
+    height: 26px;
+    min-height: 26px;
     flex-shrink: 0;
     flex-direction: row;
     align-items: center;
@@ -15,6 +17,9 @@
     flex-shrink: 1;
     min-width: 42px;
     margin-right: 2px;
+    margin-top: 0;
+    margin-bottom: 0;
+    align-self: center;
 }
 
 .toolbar-icon-button {
@@ -22,7 +27,16 @@
     min-width: 25px;
     max-width: 25px;
     height: 20px;
+    min-height: 20px;
+    max-height: 20px;
     flex-shrink: 0;
+    align-self: center;
+    align-items: center;
+    justify-content: center;
+    padding-top: 0;
+    padding-bottom: 0;
+    margin-top: 0;
+    margin-bottom: 0;
     padding-left: 4px;
     padding-right: 4px;
     margin-left: 1px;
@@ -85,6 +99,11 @@
 
 .deck-title {
     flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 20px;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
     -unity-font-style: bold;
     padding-top: 4px;
     padding-bottom: 4px;
@@ -101,7 +120,6 @@
     border-bottom-left-radius: 8px;
     border-bottom-right-radius: 8px;
     background-color: rgba(128, 128, 128, 0.20);
-    color: rgba(200, 200, 200, 0.9);
 }
 
 .deck-content {
@@ -112,7 +130,7 @@
     min-height: 30px;
 }
 
-.deck-content.drag-over {
+.deck-header.drag-over, .deck-content.drag-over {
     background-color: rgba(65, 140, 230, 0.20);
 }
 
@@ -123,6 +141,8 @@
     padding-left: 3px;
     border-bottom-width: 1px;
     border-bottom-color: rgba(128, 128, 128, 0.10);
+    border-left-width: 2px;
+    border-left-color: rgba(0, 0, 0, 0);
 }
 
 .pin-row:hover {
@@ -143,8 +163,18 @@
     padding-top: 4px;
     padding-bottom: 4px;
     -unity-text-overflow-position: end;
+    text-overflow: ellipsis;
     overflow: hidden;
     white-space: nowrap;
+}
+
+.pin-target {
+    flex-direction: row;
+    align-items: center;
+    flex-grow: 1;
+    flex-shrink: 1;
+    min-width: 0;
+    align-self: stretch;
 }
 
 .missing-pin {
@@ -158,6 +188,23 @@
     padding-left: 0;
     padding-right: 0;
     margin-left: 2px;
+    flex-shrink: 0;
+    background-color: rgba(0, 0, 0, 0);
+    border-top-color: rgba(0, 0, 0, 0);
+    border-right-color: rgba(0, 0, 0, 0);
+    border-bottom-color: rgba(0, 0, 0, 0);
+    border-left-color: rgba(0, 0, 0, 0);
+}
+
+.icon-button:hover, .icon-button:active {
+    background-color: rgba(128, 128, 128, 0.18);
+}
+
+.icon-button:focus {
+    border-top-color: rgb(65, 140, 230);
+    border-right-color: rgb(65, 140, 230);
+    border-bottom-color: rgb(65, 140, 230);
+    border-left-color: rgb(65, 140, 230);
 }
 
 .row-icon-button {
@@ -179,7 +226,6 @@
     padding-left: 4px;
     padding-right: 4px;
     -unity-text-align: middle-center;
-    color: rgba(185, 185, 185, 0.95);
     border-top-left-radius: 7px;
     border-top-right-radius: 7px;
     border-bottom-left-radius: 7px;
@@ -210,14 +256,12 @@
 
 .query-empty {
     height: 22px;
-    color: rgba(160, 160, 160, 0.9);
     -unity-font-style: italic;
 }
 
 .drop-hint {
     padding-top: 7px;
     padding-bottom: 7px;
-    color: rgba(160, 160, 160, 0.9);
     -unity-font-style: italic;
     -unity-text-align: middle-center;
 }
@@ -227,14 +271,21 @@
     margin-right: 4px;
 }
 
-.empty-state {
-    flex-grow: 1;
-    align-items: center;
-    justify-content: center;
-    min-height: 160px;
-}
+.pin-row:focus { border-left-color: rgb(65, 140, 230); }
+.selected-pin { background-color: rgba(65, 140, 230, 0.17); }
+.drop-before { border-top-width: 2px; border-top-color: rgb(65, 140, 230); }
+.drop-after { border-bottom-width: 2px; border-bottom-color: rgb(65, 140, 230); }
+.reference-status { margin-left: 38px; padding-bottom: 3px; font-size: 10px; }
+.jumpdeck-dark .reference-status { color: rgb(225, 170, 95); }
+.jumpdeck-light .reference-status, .jumpdeck-light .missing-pin { color: rgb(135, 75, 12); }
+.jumpdeck-dark .drop-hint, .jumpdeck-dark .query-empty { color: rgb(170, 170, 170); }
+.jumpdeck-light .drop-hint, .jumpdeck-light .query-empty { color: rgb(90, 90, 90); }
+.pin-row .unity-button:focus { border-bottom-color: rgb(65, 140, 230); }
 
-.empty-state > Label {
-    margin-bottom: 8px;
-    color: rgba(170, 170, 170, 0.9);
-}
+.deck-lock-mark { width: 12px; height: 12px; margin-left: 3px; margin-right: 3px; opacity: 0.8; }
+.minimized-header .deck-lock-mark { width: 10px; height: 10px; }
+.deck-header.minimized-header { min-height: 14px; height: 14px; padding-left: 3px; }
+.minimized-header .deck-title { display: none; }
+.minimized-header .deck-foldout { height: 12px; font-size: 8px; margin-right: 0; }
+.minimized-header .count-badge { font-size: 9px; min-width: 14px; }
+.minimized-header #jumpdeck-deck-menu { height: 12px; min-height: 12px; max-height: 12px; font-size: 10px; margin-left: auto; margin-top: 0; margin-bottom: 0; }

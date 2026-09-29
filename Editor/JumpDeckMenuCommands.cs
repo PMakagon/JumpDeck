@@ -42,13 +42,11 @@ namespace JumpDeck.Editor
             if (string.IsNullOrEmpty(assetPath))
                 return;
 
-            JumpDeckData data = JumpDeckData.instance;
-            data.EnsureInitialized();
+            var data = JumpDeckStorage.Default;
             string fullPath = System.IO.Path.GetFullPath(assetPath);
             if (!JumpDeckFileService.ImportDeck(data, fullPath, out JumpDeckCollection importedDeck))
                 return;
 
-            JumpDeckWindow.RefreshOpenWindows();
             Debug.Log($"JumpDeck: imported deck '{importedDeck.DisplayName}' from {assetPath}.");
         }
 
@@ -60,16 +58,16 @@ namespace JumpDeck.Editor
 
         private static void PinSelection()
         {
-            JumpDeckData data = JumpDeckData.instance;
-            data.EnsureInitialized();
+            var data = JumpDeckStorage.Default;
+            if (data.Decks.Count == 0) return;
+            string destination = JumpDeckStorage.DefaultDestination?.Invoke();
+            var deck = data.Decks.FirstOrDefault(value => value.Id == destination) ?? data.Decks[0];
 
             int added = JumpDeckService.AddObjects(
                 data,
-                data.Decks[0],
+                deck,
                 Selection.objects,
                 out List<string> errors);
-
-            JumpDeckWindow.RefreshOpenWindows();
 
             if (added == 0 && errors.Count > 0)
                 Debug.LogWarning($"JumpDeck: {errors[0]}");

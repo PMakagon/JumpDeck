@@ -21,5 +21,11 @@ jobs:
         run: |
           test -f Editor/JumpDeck.Editor.asmdef
           test -f Editor/JumpDeckWindow.cs
+          test -f Editor/JumpDeckView.cs
+          test -f Editor/JumpDeckSession.cs
+          test -f Editor/JumpDeckFileCodec.cs
           test -f README.md
+          test -f README.en.md
+          test -f Documentation~/index.md
+          test -f CHANGELOG.md
           test -f LICENSE.md

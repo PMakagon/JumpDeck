@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using UnityEditor;
 using UnityEngine;
+using static JumpDeck.Editor.JumpDeckFileCodec;
 
 namespace JumpDeck.Editor
 {
@@ -12,35 +13,8 @@ namespace JumpDeck.Editor
     {
         internal const string FileExtension = "jumpdeck";
 
-        private const int CurrentFormatVersion = 1;
-        private const long MaximumFileSize = 2 * 1024 * 1024;
         private const string ExportDirectoryKey = "JumpDeck.ExportDirectory";
         private const string ImportDirectoryKey = "JumpDeck.ImportDirectory";
-        private const string ObjectKind = "object";
-        private const string SceneQueryKind = "sceneQuery";
-
-        [Serializable]
-        private sealed class DeckFile
-        {
-            public int formatVersion = CurrentFormatVersion;
-            public string deckName;
-            public List<PinFile> pins = new();
-        }
-
-        [Serializable]
-        private sealed class PinFile
-        {
-            public string kind;
-            public string displayName;
-            public string globalObjectId;
-            public string assetGuid;
-            public long localFileId;
-            public string fallbackPath;
-            public string query;
-            public int queryScope;
-            public bool hasClickAction;
-            public int clickAction;
-        }
 
         internal static bool ExportDeck(JumpDeckCollection deck, out string exportedPath)
         {
@@ -62,8 +36,7 @@ namespace JumpDeck.Editor
 
             try
             {
-                DeckFile file = CreateFile(deck);
-                string json = JsonUtility.ToJson(file, true);
+                string json = Serialize(deck);
                 File.WriteAllText(path, json + Environment.NewLine, new UTF8Encoding(false));
                 EditorPrefs.SetString(ExportDirectoryKey, Path.GetDirectoryName(path) ?? initialDirectory);
                 ImportAssetIfInsideProject(path);
@@ -81,7 +54,7 @@ namespace JumpDeck.Editor
         }
 
         internal static bool ImportDeckFromDialog(
-            JumpDeckData data,
+            IJumpDeckStorage data,
             out JumpDeckCollection importedDeck)
         {
             importedDeck = null;
@@ -100,7 +73,7 @@ namespace JumpDeck.Editor
         }
 
         internal static bool ImportDeck(
-            JumpDeckData data,
+            IJumpDeckStorage data,
             string path,
             out JumpDeckCollection importedDeck)
         {
@@ -132,7 +105,7 @@ namespace JumpDeck.Editor
                 return false;
             }
 
-            Undo.RecordObject(data, "Import JumpDeck Deck");
+            Undo.RecordObject(data.UndoTarget, "Import JumpDeck Deck");
             data.Decks.Add(deck);
             data.SaveData();
             EditorPrefs.SetString(
@@ -148,165 +121,7 @@ namespace JumpDeck.Editor
                    string.Equals(Path.GetExtension(assetPath), $".{FileExtension}", StringComparison.OrdinalIgnoreCase);
         }
 
-        private static DeckFile CreateFile(JumpDeckCollection deck)
-        {
-            var file = new DeckFile
-            {
-                deckName = deck.DisplayName
-            };
-
-            foreach (JumpPin pin in deck.Pins)
-            {
-                file.pins.Add(new PinFile
-                {
-                    kind = pin.Kind == JumpPinKind.SceneQuery ? SceneQueryKind : ObjectKind,
-                    displayName = pin.DisplayName,
-                    globalObjectId = pin.GlobalObjectId,
-                    assetGuid = pin.AssetGuid,
-                    localFileId = pin.LocalFileId,
-                    fallbackPath = pin.FallbackPath,
-                    query = pin.Query,
-                    queryScope = (int)pin.QueryScope,
-                    hasClickAction = pin.HasClickAction,
-                    clickAction = (int)pin.ClickAction
-                });
-            }
-
-            return file;
-        }
-
-        private static bool TryReadFile(
-            string path,
-            out DeckFile file,
-            out string error)
-        {
-            file = null;
-            error = null;
-
-            try
-            {
-                string fullPath = Path.GetFullPath(path);
-                var info = new FileInfo(fullPath);
-                if (!info.Exists)
-                {
-                    error = $"File does not exist:\n{fullPath}";
-                    return false;
-                }
-
-                if (info.Length > MaximumFileSize)
-                {
-                    error = "Deck file is larger than the supported 2 MB limit.";
-                    return false;
-                }
-
-                file = JsonUtility.FromJson<DeckFile>(File.ReadAllText(fullPath, Encoding.UTF8));
-                if (file == null)
-                {
-                    error = "The file does not contain a valid JumpDeck deck.";
-                    return false;
-                }
-
-                if (file.formatVersion != CurrentFormatVersion)
-                {
-                    error =
-                        $"Unsupported JumpDeck format version {file.formatVersion}. " +
-                        $"This version supports format {CurrentFormatVersion}.";
-                    return false;
-                }
-
-                file.pins ??= new List<PinFile>();
-                return true;
-            }
-            catch (Exception exception)
-            {
-                error = exception.Message;
-                return false;
-            }
-        }
-
-        private static bool TryBuildDeck(
-            DeckFile file,
-            string sourcePath,
-            out JumpDeckCollection deck,
-            out ImportSummary summary,
-            out string error)
-        {
-            string fallbackName = Path.GetFileNameWithoutExtension(sourcePath);
-            string deckName = string.IsNullOrWhiteSpace(file.deckName)
-                ? fallbackName
-                : file.deckName.Trim();
-            deck = JumpDeckCollection.Create(string.IsNullOrWhiteSpace(deckName) ? "Imported Deck" : deckName);
-            summary = default;
-            error = null;
-
-            for (int index = 0; index < file.pins.Count; index++)
-            {
-                PinFile source = file.pins[index];
-                if (source == null)
-                {
-                    error = $"Pin #{index + 1} is invalid.";
-                    return false;
-                }
-
-                string displayName = string.IsNullOrWhiteSpace(source.displayName)
-                    ? "Untitled Pin"
-                    : source.displayName.Trim();
-
-                if (string.Equals(source.kind, ObjectKind, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (string.IsNullOrEmpty(source.globalObjectId) && string.IsNullOrEmpty(source.assetGuid))
-                    {
-                        error = $"Object pin \"{displayName}\" has no object identifier.";
-                        return false;
-                    }
-
-                    if (source.hasClickAction &&
-                        !Enum.IsDefined(typeof(JumpPinClickAction), source.clickAction))
-                    {
-                        error = $"Object pin \"{displayName}\" has an unsupported click action.";
-                        return false;
-                    }
-
-                    JumpPin pin = JumpPin.ForObject(
-                        displayName,
-                        source.globalObjectId,
-                        source.assetGuid,
-                        source.localFileId,
-                        source.fallbackPath,
-                        source.hasClickAction,
-                        source.hasClickAction
-                            ? (JumpPinClickAction)source.clickAction
-                            : JumpPinClickAction.InspectOrOpen);
-                    deck.Pins.Add(pin);
-                    summary.ObjectPins++;
-                    if (JumpDeckObjectUtility.Resolve(pin) == null)
-                        summary.UnresolvedObjects++;
-                }
-                else if (string.Equals(source.kind, SceneQueryKind, StringComparison.OrdinalIgnoreCase))
-                {
-                    if (string.IsNullOrWhiteSpace(source.query))
-                    {
-                        error = $"Live Pin \"{displayName}\" has an empty query.";
-                        return false;
-                    }
-
-                    SceneQueryScope scope = Enum.IsDefined(typeof(SceneQueryScope), source.queryScope)
-                        ? (SceneQueryScope)source.queryScope
-                        : SceneQueryScope.AllLoadedScenes;
-                    deck.Pins.Add(JumpPin.ForQuery(displayName, source.query.Trim(), scope));
-                    summary.QueryPins++;
-                }
-                else
-                {
-                    error = $"Pin \"{displayName}\" has unsupported kind \"{source.kind}\".";
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        private static string MakeUniqueDeckName(JumpDeckData data, string requestedName)
+        private static string MakeUniqueDeckName(IJumpDeckStorage data, string requestedName)
         {
             var existingNames = new HashSet<string>(
                 data.Decks.Select(deck => deck.DisplayName),
@@ -348,13 +163,6 @@ namespace JumpDeck.Editor
 
             string assetPath = "Assets" + fullPath.Substring(assetsPath.Length);
             AssetDatabase.ImportAsset(assetPath, ImportAssetOptions.ForceUpdate);
-        }
-
-        private struct ImportSummary
-        {
-            internal int ObjectPins;
-            internal int QueryPins;
-            internal int UnresolvedObjects;
         }
     }
 }

@@ -1,18 +1,40 @@
-using System.Text;
 using System.IO;
+using System.Text;
 using UnityEditor;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace JumpDeck.Editor
 {
+    internal enum JumpDeckReferenceStatus { Available, SceneNotLoaded, Missing, Invalid }
+
+    internal readonly struct JumpDeckReference
+    {
+        internal readonly Object Target;
+        internal readonly JumpDeckReferenceStatus Status;
+        internal readonly string ScenePath;
+        internal JumpDeckReference(Object target, JumpDeckReferenceStatus status, string scenePath = null)
+        {
+            Target = target;
+            Status = status;
+            ScenePath = scenePath;
+        }
+        internal string Description => Status switch
+        {
+            JumpDeckReferenceStatus.Available => "Available",
+            JumpDeckReferenceStatus.SceneNotLoaded => "Scene is not loaded",
+            JumpDeckReferenceStatus.Missing => "Object no longer exists",
+            _ => "Invalid object reference"
+        };
+    }
+
     internal static class JumpDeckObjectUtility
     {
-        internal static bool TryCreatePin(Object source, out JumpPin pin, out string error)
+        internal static bool TryCreatePin(Object target, out JumpPin pin, out string error)
         {
             pin = null;
             error = null;
 
-            Object target = NormalizeObject(source);
             if (target == null)
             {
                 error = "JumpDeck cannot pin this object.";
@@ -43,6 +65,12 @@ namespace JumpDeck.Editor
                 fallbackPath = BuildScenePath(target);
             }
 
+            if (globalId.identifierType == 0 && string.IsNullOrEmpty(guid))
+            {
+                error = $"JumpDeck cannot save a reference to '{target.name}'.";
+                return false;
+            }
+
             pin = JumpPin.ForObject(
                 target.name,
                 serializedGlobalId,
@@ -55,34 +83,51 @@ namespace JumpDeck.Editor
 
         internal static Object Resolve(JumpPin pin)
         {
+            return ResolveReference(pin).Target;
+        }
+
+        internal static JumpDeckReference ResolveReference(JumpPin pin)
+        {
             if (pin == null || pin.Kind != JumpPinKind.Object)
-                return null;
+                return new JumpDeckReference(null, JumpDeckReferenceStatus.Invalid);
 
             if (!string.IsNullOrEmpty(pin.GlobalObjectId) &&
                 GlobalObjectId.TryParse(pin.GlobalObjectId, out GlobalObjectId globalId))
             {
                 Object resolved = GlobalObjectId.GlobalObjectIdentifierToObjectSlow(globalId);
                 if (resolved != null)
-                    return resolved;
+                    return new JumpDeckReference(resolved, JumpDeckReferenceStatus.Available);
+
+                if (globalId.identifierType == 2)
+                {
+                    string scenePath = AssetDatabase.GUIDToAssetPath(globalId.assetGUID.ToString());
+                    if (string.IsNullOrEmpty(scenePath))
+                        return new JumpDeckReference(null, JumpDeckReferenceStatus.Missing);
+                    Scene scene = SceneManager.GetSceneByPath(scenePath);
+                    return new JumpDeckReference(null,
+                        scene.IsValid() && scene.isLoaded
+                            ? JumpDeckReferenceStatus.Missing
+                            : JumpDeckReferenceStatus.SceneNotLoaded, scenePath);
+                }
             }
 
             if (string.IsNullOrEmpty(pin.AssetGuid))
-                return null;
+                return new JumpDeckReference(null, JumpDeckReferenceStatus.Invalid);
 
             string path = AssetDatabase.GUIDToAssetPath(pin.AssetGuid);
             if (string.IsNullOrEmpty(path))
-                return null;
+                return new JumpDeckReference(null, JumpDeckReferenceStatus.Missing);
 
             foreach (Object candidate in AssetDatabase.LoadAllAssetsAtPath(path))
             {
                 if (AssetDatabase.TryGetGUIDAndLocalFileIdentifier(candidate, out _, out long fileId) &&
                     fileId == pin.LocalFileId)
                 {
-                    return candidate;
+                    return new JumpDeckReference(candidate, JumpDeckReferenceStatus.Available);
                 }
             }
 
-            return AssetDatabase.LoadMainAssetAtPath(path);
+            return new JumpDeckReference(null, JumpDeckReferenceStatus.Missing);
         }
 
         internal static void SelectAndPing(Object target, bool frameSceneObject)
@@ -114,10 +159,7 @@ namespace JumpDeck.Editor
 
         internal static JumpPinClickAction GetDefaultClickAction(Object target)
         {
-            if (target == null)
-                return JumpPinClickAction.InspectOrOpen;
-
-            if (!EditorUtility.IsPersistent(target))
+            if (target == null || !EditorUtility.IsPersistent(target))
                 return JumpPinClickAction.InspectOrOpen;
 
             string assetPath = AssetDatabase.GetAssetPath(target);
@@ -160,15 +202,12 @@ namespace JumpDeck.Editor
             }
         }
 
-        private static Object NormalizeObject(Object source)
+        internal static string HierarchyPath(Transform transform)
         {
-            if (source == null)
-                return null;
-
-            if (source is Component component && component == null)
-                return null;
-
-            return source;
+            var path = new StringBuilder(transform.name);
+            for (Transform parent = transform.parent; parent != null; parent = parent.parent)
+                path.Insert(0, parent.name + "/");
+            return path.ToString();
         }
 
         private static bool IsImportedMediaAsset(string assetPath)
@@ -197,20 +236,11 @@ namespace JumpDeck.Editor
             if (!TryGetSceneGameObject(target, out GameObject gameObject))
                 return target.name;
 
-            var hierarchyPath = new StringBuilder(gameObject.name);
-            Transform parent = gameObject.transform.parent;
-            while (parent != null)
-            {
-                hierarchyPath.Insert(0, '/');
-                hierarchyPath.Insert(0, parent.name);
-                parent = parent.parent;
-            }
-
             string suffix = target is Component component
                 ? $" ({component.GetType().Name})"
                 : string.Empty;
 
-            return $"{gameObject.scene.path}|{hierarchyPath}{suffix}";
+            return $"{gameObject.scene.path}|{HierarchyPath(gameObject.transform)}{suffix}";
         }
     }
 }

@@ -1,0 +1,7 @@
+{
+  "name": "JumpDeck.Editor.Tests",
+  "references": ["JumpDeck.Editor"],
+  "includePlatforms": ["Editor"],
+  "optionalUnityReferences": ["TestAssemblies"],
+  "autoReferenced": false
+}

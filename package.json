@@ -1,6 +1,6 @@
 {
   "name": "com.pmakagon.jumpdeck",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "displayName": "JumpDeck",
   "description": "Personal project pins and live scene queries for the Unity Editor.",
   "unity": "2023.2",
