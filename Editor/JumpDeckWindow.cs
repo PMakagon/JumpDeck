@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace JumpDeck.Editor
 {
-    internal sealed class JumpDeckWindow : EditorWindow
+    public sealed class JumpDeckWindow : EditorWindow
     {
         private JumpDeckView view;
 
@@ -23,7 +23,19 @@ namespace JumpDeck.Editor
             window.Show();
         }
 
-        [Shortcut("JumpDeck/Open", KeyCode.J, ShortcutModifiers.Alt)]
+        public static bool FocusExistingWindow()
+        {
+            foreach (var window in Resources.FindObjectsOfTypeAll<JumpDeckWindow>())
+            {
+                if (window.view == null && !window.docked) continue;
+                window.Show();
+                window.Focus();
+                return true;
+            }
+            return false;
+        }
+
+        [Shortcut(JumpDeckShortcut.Id, KeyCode.J, ShortcutModifiers.Alt)]
         private static void OpenShortcut()
         {
             if (!JumpDeckStorage.TryOpen()) ShowWindow();

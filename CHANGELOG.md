@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.1 — 2026-09-29
+
+- Change the opening shortcut directly in the settings popup, using Unity shortcut profiles.
+- Keep shortcut labels in sync when bindings or profiles change.
+- Expose a shared way to focus an existing JumpDeck window.
+
 ## 0.2.0 — 2026-09-29
 
 - Add per-deck icon sizes, optional Ping/Open buttons, locks, and compact headers. Keep display settings in exports.

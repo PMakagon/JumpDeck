@@ -10,7 +10,7 @@ namespace JumpDeck.Editor
 {
     public sealed partial class JumpDeckView
     {
-        private static readonly Vector2 GlobalSettingsSize = new(280, 116);
+        private static readonly Vector2 GlobalSettingsSize = new(280, 140);
         private Vector2 SettingsSize => GlobalSettingsSize + new Vector2(0, extension?.SettingsHeight ?? 0);
 
         internal VisualElement CreateGlobalSettings(Action close = null)
@@ -27,6 +27,7 @@ namespace JumpDeck.Editor
             counts.RegisterValueChangedCallback(evt => settings.UpdateGlobal(evt.newValue, settings.MinimizeHeaders));
             minimize.RegisterValueChangedCallback(evt => settings.UpdateGlobal(settings.ShowPinCounts, evt.newValue));
             root.Add(counts); root.Add(minimize);
+            root.Add(JumpDeckShortcut.CreateField());
             void Sync()
             {
                 counts.SetValueWithoutNotify(settings.ShowPinCounts);

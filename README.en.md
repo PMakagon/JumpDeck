@@ -22,6 +22,7 @@ https://github.com/PMakagon/JumpDeck.git
 ```
 
 Open **Window → JumpDeck**, or press **Alt+J**.
+To change the shortcut, open the gear menu, click **Open shortcut** and press a new key combination.
 Dock it wherever it's handy.
 
 ## Make a deck
