@@ -1,54 +1,17 @@
-<h1 align="center">
-  <picture>
-    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/wordmark-dark.svg">
-    <img src=".github/brand/wordmark-light.svg" alt="JumpDeck" width="600">
-  </picture>
-</h1>
-
-<p align="center"><strong>Bookmarks for everything you keep coming back to in Unity.</strong></p>
+# JumpDeck
 
 [Русский](README.md) · **English**
 
-JumpDeck brings assets, scripts, settings, scene objects, and saved searches
-into one Unity Editor panel. Organize pins into decks for UI, level design,
-lighting, or other work, then dock the panel where you need it.
+**Stop jumping between folders and windows.**
 
-- **Quick access:** click a pin to locate or open its target.
-- **Your own decks:** reorder pins, change icon sizes, and choose click actions.
-- **Live Pins:** run saved searches across loaded scenes.
-- **Sharing:** export a deck to a `.jumpdeck` file.
+JumpDeck is a bookmark panel for everything you often need in Unity.
+Bookmarks are grouped into decks that you can build around different kinds of work:
+UI, level design, lighting, or animation. Dock the panel in your layout
+and access the objects you need from one place.
+
+Decks can hold assets, scripts, settings, scene objects, and even search queries.
 
 **MIT · Unity 2023.2+ and Unity 6**. Tested on Unity 2023.2.22f1 and Unity 6 (6000.6.3f1).
-
-## See it in action
-
-### 1. Build decks for your work
-
-Create a deck from the gear menu, then drag in objects, folders, and settings.
-Keep several decks in the same window for different tasks.
-
-<p align="center"><a href=".github/screenshots/create-deck.png"><img src=".github/screenshots/create-deck.png" alt="Create and import deck menu" width="655"></a><br><sub>Create and import decks</sub></p>
-
-Pins can lead to assets, scene objects, or saved searches.
-Click a screenshot for a closer look.
-
-<p align="center"><a href=".github/screenshots/decks.png"><img src=".github/screenshots/decks.png" alt="Decks with object, settings, and folder pins" width="337"></a><br><sub>Several decks in one panel</sub></p>
-
-### 2. Choose what a click does
-
-A pin can highlight its target with **Ping**, open it with **Open/Inspect**, or do both.
-Choose the action for each pin.
-
-<p align="center"><a href=".github/screenshots/click-action.png"><img src=".github/screenshots/click-action.png" alt="Pin click action menu" width="665"></a></p>
-
-### 3. Make each deck fit its job
-
-Each deck has its own icon size and buttons. Minimize headers when you need more room;
-the pins stay visible.
-
-<p align="center"><a href=".github/screenshots/icon-size.png"><img src=".github/screenshots/icon-size.png" alt="Deck icon and button size settings" width="646"></a><br><sub>Individual deck settings</sub></p>
-
-<p align="center"><a href=".github/screenshots/compact-headers.png"><img src=".github/screenshots/compact-headers.png" alt="Decks with minimized headers" width="179"></a><br><sub>Minimized headers</sub></p>
 
 ## Install
 
