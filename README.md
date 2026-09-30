@@ -27,12 +27,12 @@ JumpDeck собирает ассеты, скрипты, настройки, об
 Создай деку через шестерёнку, затем перетащи в неё объекты, папки и настройки.
 В одном окне можно держать несколько дек для разных задач.
 
-<table>
-  <tr>
-    <td valign="top"><a href=".github/screenshots/decks.png"><img src=".github/screenshots/decks.png" alt="Деки с пинами объектов, настроек и папок" width="337"></a></td>
-    <td valign="top"><a href=".github/screenshots/create-deck.png"><img src=".github/screenshots/create-deck.png" alt="Меню создания и импорта дек" width="460"></a><br><br>Пины могут вести к ассетам, объектам сцены или сохранённому поиску. Нажми на картинку, чтобы рассмотреть интерфейс крупнее.</td>
-  </tr>
-</table>
+<p align="center"><a href=".github/screenshots/create-deck.png"><img src=".github/screenshots/create-deck.png" alt="Меню создания и импорта дек" width="655"></a><br><sub>Меню создания и импорта дек</sub></p>
+
+Пины могут вести к ассетам, объектам сцены или сохранённому поиску.
+Нажми на скриншот, чтобы рассмотреть интерфейс крупнее.
+
+<p align="center"><a href=".github/screenshots/decks.png"><img src=".github/screenshots/decks.png" alt="Деки с пинами объектов, настроек и папок" width="337"></a><br><sub>Несколько дек в одной панели</sub></p>
 
 ### 2. Выбери действие по клику
 
@@ -46,12 +46,9 @@ JumpDeck собирает ассеты, скрипты, настройки, об
 У каждой деки свой размер иконок и набор кнопок. Если нужно больше места, сверни заголовки:
 пины останутся на виду.
 
-<table>
-  <tr>
-    <td align="center" valign="top"><a href=".github/screenshots/icon-size.png"><img src=".github/screenshots/icon-size.png" alt="Настройки размера иконок и кнопок деки" width="580"></a><br><strong>Настройки деки</strong></td>
-    <td align="center" valign="top"><a href=".github/screenshots/compact-headers.png"><img src=".github/screenshots/compact-headers.png" alt="Деки со свёрнутыми заголовками" width="160"></a><br><strong>Компактный вид</strong></td>
-  </tr>
-</table>
+<p align="center"><a href=".github/screenshots/icon-size.png"><img src=".github/screenshots/icon-size.png" alt="Настройки размера иконок и кнопок деки" width="646"></a><br><sub>Настройки отдельной деки</sub></p>
+
+<p align="center"><a href=".github/screenshots/compact-headers.png"><img src=".github/screenshots/compact-headers.png" alt="Деки со свёрнутыми заголовками" width="179"></a><br><sub>Свёрнутые заголовки</sub></p>
 
 ## Установка
 
