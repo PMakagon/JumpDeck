@@ -1,15 +1,22 @@
-# JumpDeck
+<h1 align="center">
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset=".github/brand/wordmark-dark.svg">
+    <img src=".github/brand/wordmark-light.svg" alt="JumpDeck" width="600">
+  </picture>
+</h1>
+
+<p align="center"><strong>Bookmarks for everything you keep coming back to in Unity.</strong></p>
 
 [Русский](README.md) · **English**
 
-**Stop jumping between folders and windows.**
+JumpDeck brings assets, scripts, settings, scene objects, and saved searches
+into one Unity Editor panel. Organize pins into decks for UI, level design,
+lighting, or other work, then dock the panel where you need it.
 
-JumpDeck is a bookmark panel for everything you often need in Unity.
-Bookmarks are grouped into decks that you can build around different kinds of work:
-UI, level design, lighting, or animation. Dock the panel in your layout
-and access the objects you need from one place.
-
-Decks can hold assets, scripts, settings, scene objects, and even search queries.
+- **Quick access:** click a pin to locate or open its target.
+- **Your own decks:** reorder pins, change icon sizes, and choose click actions.
+- **Live Pins:** run saved searches across loaded scenes.
+- **Sharing:** export a deck to a `.jumpdeck` file.
 
 **MIT · Unity 2023.2+ and Unity 6**. Tested on Unity 2023.2.22f1 and Unity 6 (6000.6.3f1).
 
