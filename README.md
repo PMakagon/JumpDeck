@@ -20,6 +20,39 @@ JumpDeck собирает ассеты, скрипты, настройки, об
 
 **MIT · Unity 2023.2+ и Unity 6**. Проверено на Unity 2023.2.22f1 и Unity 6 (6000.6.3f1).
 
+## Как это выглядит
+
+### 1. Собери нужное в деки
+
+Создай деку через шестерёнку, затем перетащи в неё объекты, папки и настройки.
+В одном окне можно держать несколько дек для разных задач.
+
+<table>
+  <tr>
+    <td valign="top"><a href=".github/screenshots/decks.png"><img src=".github/screenshots/decks.png" alt="Деки с пинами объектов, настроек и папок" width="337"></a></td>
+    <td valign="top"><a href=".github/screenshots/create-deck.png"><img src=".github/screenshots/create-deck.png" alt="Меню создания и импорта дек" width="460"></a><br><br>Пины могут вести к ассетам, объектам сцены или сохранённому поиску. Нажми на картинку, чтобы рассмотреть интерфейс крупнее.</td>
+  </tr>
+</table>
+
+### 2. Выбери действие по клику
+
+Пин может подсветить объект через **Ping**, открыть его через **Open/Inspect** или сделать оба действия.
+Выбор задаётся для каждого пина отдельно.
+
+<p align="center"><a href=".github/screenshots/click-action.png"><img src=".github/screenshots/click-action.png" alt="Меню выбора действия по клику на пин" width="665"></a></p>
+
+### 3. Подстрой вид под задачу
+
+У каждой деки свой размер иконок и набор кнопок. Если нужно больше места, сверни заголовки:
+пины останутся на виду.
+
+<table>
+  <tr>
+    <td align="center" valign="top"><a href=".github/screenshots/icon-size.png"><img src=".github/screenshots/icon-size.png" alt="Настройки размера иконок и кнопок деки" width="580"></a><br><strong>Настройки деки</strong></td>
+    <td align="center" valign="top"><a href=".github/screenshots/compact-headers.png"><img src=".github/screenshots/compact-headers.png" alt="Деки со свёрнутыми заголовками" width="160"></a><br><strong>Компактный вид</strong></td>
+  </tr>
+</table>
+
 ## Установка
 
 В **Window → Package Manager → Add package from git URL** вставь:
